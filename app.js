@@ -14,9 +14,9 @@ const app = express();
 
 // ---------- MIDDLEWARES ----------
 
-// CORS setup for deployed frontend
+// CORS setup for frontend
 app.use(cors({
-  origin: "https://tu-frontend-deploy-url.com", // yaha apna frontend deployed URL dal do
+  origin: process.env.FRONTEND_URL || "http://localhost:3000", // add FRONTEND_URL in .env
   credentials: true
 }));
 
@@ -24,7 +24,7 @@ app.use(cors({
 app.use(express.json());
 
 // Serve uploaded files
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ---------- ROUTES ----------
 app.use('/api/auth', authRoutes);
@@ -47,5 +47,8 @@ mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-.then(() => app.listen(PORT, () => console.log(`Server running on port ${PORT}`)))
+.then(() => {
+  console.log("MongoDB Connected");
+  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+})
 .catch(err => console.error("DB connection error:", err));
