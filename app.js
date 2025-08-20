@@ -14,9 +14,20 @@ const app = express();
 
 // ---------- MIDDLEWARES ----------
 
-// CORS setup for frontend
+// CORS setup for local + deployed frontend
+const allowedOrigins = [
+  'http://localhost:3000',                       // local dev
+  'https://zesty-hamster-a70a8a.netlify.app'    // deployed frontend
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || "http://localhost:3000", // add FRONTEND_URL in .env
+  origin: function(origin, callback){
+    if(!origin) return callback(null, true); // allow Postman/server requests
+    if(allowedOrigins.indexOf(origin) === -1){
+      return callback(new Error('CORS not allowed from this origin'), false);
+    }
+    return callback(null, true);
+  },
   credentials: true
 }));
 
