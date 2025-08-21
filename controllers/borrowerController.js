@@ -1,5 +1,6 @@
 const Borrower = require('../models/Borrower');
 
+// Loan Apply
 async function applyLoan(req, res) {
   try {
     const { loanAmount, tenure, purpose } = req.body;
@@ -32,4 +33,14 @@ async function applyLoan(req, res) {
   }
 }
 
-module.exports = { applyLoan };
+// 👇 New function: Get all loans (for Investor Dashboard)
+async function getAllLoans(req, res) {
+  try {
+    const loans = await Borrower.find().populate("user", "name email");
+    res.json(loans);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+module.exports = { applyLoan, getAllLoans };
