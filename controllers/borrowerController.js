@@ -1,28 +1,28 @@
 const Loan = require('../models/Loan');
 
-const TENURE_INTEREST = {
-  3: 10,
-  6: 12,
-  12: 15,
-  18: 18,
-};
-
 async function applyLoan(req, res) {
   try {
     const { loanAmount, tenure, purpose } = req.body;
     const documents = (req.files || []).map(file => file.path);
 
     // Fixed interest rate based on tenure
-    const interestRate = TENURE_INTEREST[tenure];
-    if (!interestRate) return res.status(400).json({ error: 'Invalid tenure' });
+    let interestRate;
+    switch (parseInt(tenure)) {
+      case 3: interestRate = 12; break;
+      case 6: interestRate = 14; break;
+      case 12: interestRate = 16; break;
+      case 15: interestRate = 17; break;
+      case 18: interestRate = 18; break;
+      default: interestRate = 15;
+    }
 
     const loan = await Loan.create({
-      user: req.user._id,
-      amount: loanAmount,
+      borrower: req.user._id,
+      loanAmount,
       tenure,
       interestRate,
       purpose,
-      documents,
+      documents
     });
 
     res.json({ message: 'Loan application submitted', loan });
