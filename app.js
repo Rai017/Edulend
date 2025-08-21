@@ -16,7 +16,7 @@ const allowedOrigins = [
   'http://localhost:3000',                        
   'https://zesty-hamster-a70a8a.netlify.app',    
   'https://symphonious-chimera-73626a.netlify.app',
-  'https://zingy-truffle-1e5772.netlify.app'
+  'https://rainbow-rabanadas-c5f111.netlify.app'
 ];
 
 app.use(cors({
