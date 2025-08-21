@@ -19,14 +19,17 @@ exports.invest = async (req, res) => {
     if (!req.user || req.user.walletBalance < amount)
       return res.status(400).json({ error: 'Insufficient wallet balance' });
 
-    const remaining = loan.amount - loan.fundedAmount;
+    // ✅ yaha pe fix kiya: loan.amount ❌ → loan.loanAmount ✅
+    const remaining = loan.loanAmount - loan.fundedAmount;
     const commit = Math.min(remaining, amount);
 
     // update loan
     loan.fundedAmount += commit;
     loan.investors = loan.investors || [];
     loan.investors.push({ investor: req.user._id, amount: commit });
-    if (loan.fundedAmount >= loan.amount) loan.status = 'active';
+
+    if (loan.fundedAmount >= loan.loanAmount) loan.status = 'active';
+
     await loan.save();
 
     // update user wallet
