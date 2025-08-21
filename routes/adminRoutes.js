@@ -1,18 +1,26 @@
 const express = require('express');
 const router = express.Router();
-const { creditWallet, getReserve } = require('../controllers/adminController');
 const { protect } = require('../middlewares/authMiddleware');
+const {
+  getAllUsers,
+  getAllLoans,
+  creditWallet,
+  getReserve
+} = require('../controllers/adminController');
 
-// Pehle protect lagao, phir admin check
+// Admin protect middleware
 router.use(protect);
 router.use((req, res, next) => {
-  if (!req.user || !req.user.isAdmin) {
+  if(!req.user || req.user.role !== 'admin'){
     return res.status(403).json({ error: 'Admin only' });
   }
   next();
 });
 
-router.post('/credit', creditWallet);
-router.get('/reserve', getReserve);
+// Routes
+router.get('/users', getAllUsers);       // frontend fetch users
+router.get('/loans', getAllLoans);       // frontend fetch loans
+router.post('/credit', creditWallet);    // credit wallet
+router.get('/reserve', getReserve);      // get reserve info
 
 module.exports = router;
