@@ -1,46 +1,47 @@
+// controllers/borrowerController.js
 const Borrower = require('../models/Borrower');
 
-// Loan Apply
-async function applyLoan(req, res) {
+// Apply Loan
+const applyLoan = async (req, res) => {
   try {
-    const { loanAmount, tenure, purpose } = req.body;
+    const { loanAmount, tenure, interestRate, purpose } = req.body;
+    const documents = req.files?.map(file => file.path) || [];
 
-    // Fixed interest rate based on tenure
-    let interestRate = 0;
-    if (tenure == 3) interestRate = 8;
-    else if (tenure == 6) interestRate = 10;
-    else if (tenure == 12) interestRate = 12;
-    else if (tenure == 15) interestRate = 14;
-    else if (tenure == 18) interestRate = 16;
-    else return res.status(400).json({ error: 'Invalid tenure' });
+    if (!loanAmount || !tenure || !interestRate || !purpose) {
+      return res.status(400).json({ error: "All fields are required" });
+    }
 
-    const documents = (req.files || []).map(file => file.path);
-
-    const borrower = await Borrower.create({
+    const newLoan = new Borrower({
       user: req.user._id,
-      loanAmount,
-      tenure,
-      interestRate,
+      loanAmount: Number(loanAmount),
+      tenure: Number(tenure),
+      interestRate: Number(interestRate),
       purpose,
       documents,
-      status: 'open',
-      fundedAmount: 0
+      fundedAmount: 0,
+      status: "open"
     });
 
-    res.json({ message: 'Loan application submitted', borrower });
+    await newLoan.save();
+    res.status(201).json({ message: "Loan request submitted successfully", loan: newLoan });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Loan Apply Error:", err);
+    res.status(500).json({ error: "Server error while applying loan" });
   }
-}
+};
 
-// 👇 New function: Get all loans (for Investor Dashboard)
-async function getAllLoans(req, res) {
+// ✅ Get All Loans (for Investor Dashboard)
+const getAllLoans = async (req, res) => {
   try {
-    const loans = await Borrower.find().populate("user", "name email");
+    const loans = await Borrower.find()
+      .populate("user", "name email"); // borrower ka naam & email dikhane k liye
+
     res.json(loans);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error("Get Loans Error:", err);
+    res.status(500).json({ error: "Server error while fetching loans" });
   }
-}
+};
 
+// ✅ Dono export karne h
 module.exports = { applyLoan, getAllLoans };
