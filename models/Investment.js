@@ -1,11 +1,10 @@
 const mongoose = require('mongoose');
 
-const investSchema = new mongoose.Schema({
-  investor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  loan: { type: mongoose.Schema.Types.ObjectId, ref: 'Loan' },
-  amount: Number,
-  createdAt: { type: Date, default: Date.now },
-  status: { type: String, enum: ['active','completed'], default: 'active' }
+const investmentSchema = new mongoose.Schema({
+  investor: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  loan: { type: mongoose.Schema.Types.ObjectId, ref: 'Loan', required: true },
+  amount: { type: Number, required: true },
+  createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Investment', investSchema);
+module.exports = mongoose.model('Investment', investmentSchema);
