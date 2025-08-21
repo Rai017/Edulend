@@ -1,20 +1,15 @@
 const mongoose = require('mongoose');
 
 const loanSchema = new mongoose.Schema({
-  borrower: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   amount: { type: Number, required: true },
-  tenure: { type: Number, enum: [3, 6, 12, 15, 18], required: true },
-  interestRate: { type: Number, required: true }, // Fixed by backend
+  tenure: { type: Number, required: true }, // months
+  interestRate: { type: Number, required: true }, // fixed
   purpose: { type: String },
-  documents: [{ type: String }],
+  status: { type: String, default: 'open' }, // open, active, closed
   fundedAmount: { type: Number, default: 0 },
-  status: { type: String, enum: ['open', 'active', 'closed'], default: 'open' },
-  investors: [
-    {
-      investor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-      amount: Number
-    }
-  ]
+  investors: [{ investor: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, amount: Number }],
+  documents: [String],
 }, { timestamps: true });
 
 module.exports = mongoose.model('Loan', loanSchema);
