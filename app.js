@@ -11,11 +11,12 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// CORS setup
+
 const allowedOrigins = [
-  'http://localhost:3000',                        // local frontend
-  'https://zesty-hamster-a70a8a.netlify.app',    // Netlify frontend 1
-  'https://symphonious-chimera-73626a.netlify.app' // Netlify frontend 2
+  'http://localhost:3000',                        
+  'https://zesty-hamster-a70a8a.netlify.app',    
+  'https://symphonious-chimera-73626a.netlify.app',
+  'https://zingy-truffle-1e5772.netlify.app'
 ];
 
 app.use(cors({
