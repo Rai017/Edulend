@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protect } = require("../middleware/auth");
+const { protect } = require("../middlewares/authMiddleware");
 const Loan = require("../models/Loan");
 
 // ✅ Get all loans borrowed by logged-in borrower
