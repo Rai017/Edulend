@@ -1,13 +1,16 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { applyLoan, getAllLoans } = require('../controllers/borrowerController');
-const { protect } = require('../middlewares/authMiddleware');
-const upload = require('../middlewares/uploadMiddleware');
+const { protect } = require("../middleware/auth");
+const Loan = require("../models/Loan");
 
-// Loan apply
-router.post('/apply', protect, upload.array('documents', 5), applyLoan);
-
-// ✅ Get all loans (Investor Dashboard ke liye)
-router.get('/loans', protect, getAllLoans);
+// ✅ Get all loans borrowed by logged-in borrower
+router.get("/my-loans", protect, async (req, res) => {
+  try {
+    const loans = await Loan.find({ borrower: req.user._id });
+    res.json(loans);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 module.exports = router;
