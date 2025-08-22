@@ -1,9 +1,9 @@
-// controllers/investController.js
-const Borrower = require('../models/Borrower');
+const Borrower = require("../models/Borrower");
 
 const investLoan = async (req, res) => {
   try {
-    const { loanId, amount } = req.body;
+    const { amount } = req.body;
+    const loanId = req.params.id;   // ✅ loanId params se aa raha hai
 
     if (!loanId || !amount) {
       return res.status(400).json({ error: "Loan ID and amount required" });
@@ -27,4 +27,4 @@ const investLoan = async (req, res) => {
   }
 };
 
-module.exports = { investLoan };   // 👈 ye zaruri hai
+module.exports = { investLoan };

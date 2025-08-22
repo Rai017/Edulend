@@ -1,10 +1,8 @@
-// routes/investRoutes.js
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { investLoan } = require('../controllers/investController');
-const { protect } = require('../middlewares/authMiddleware');
+const { investLoan } = require("../controllers/investController");
+const { protect } = require("../middlewares/authMiddleware");  // ✅ yahi import kiya hai
 
-// Loan ID URL me pass hoga
-router.post('/:loanId', protect, investLoan);
+router.post("/:id", protect, investLoan);   // ✅ same naam use kar
 
 module.exports = router;
